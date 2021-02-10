@@ -49,13 +49,7 @@ class DefaultController extends Controller
 
         if($_SERVER['REQUEST_METHOD'] == "POST"){
             
-            $dataa = [
-                "id" => 3,
-                'title' => 'Meeting',
-                'status' => false
-            ];
-
-            array_push($this->todo_array, $dataa);
+            array_push($this->todo_array, $params);
 
             $data = Yii::$app->apiConfig->returnedData(200, false, $this->todo_array);
 
@@ -69,7 +63,7 @@ class DefaultController extends Controller
 
     public function actionRead()
     {
-         $params = Yii::$app->request->post(); //to receive all input including that of json
+        $params = Yii::$app->request->post(); //to receive all input including that of json
 
         if($_SERVER['REQUEST_METHOD'] == "GET"){
             $data = Yii::$app->apiConfig->returnedData(200, false, $this->todo_array);
@@ -88,6 +82,21 @@ class DefaultController extends Controller
 
     public function actionDelete()
     {
+        $params = Yii::$app->request->post(); //to receive all input including that of json
 
+        if($_SERVER['REQUEST_METHOD'] == "POST"){
+            foreach($this->todo_array as $key => $value){
+                if($value['id'] == $params['id']){
+                    unset($this->todo_array[$key]);
+                }
+            }
+
+            $data = Yii::$app->apiConfig->returnedData(200, false, $this->todo_array);
+        }else{
+            $message = 'Only POST Method is allowed';
+            $data = Yii::$app->apiConfig->returnedData(401, true, $message); 
+        }
+
+        return $data;
     }
 }
