@@ -125,7 +125,7 @@ DELETE
 
 - formBody:
 {
-    "id": 2,
+    "id": 2
 }
 
 - Response:
