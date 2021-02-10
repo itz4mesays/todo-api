@@ -40,7 +40,7 @@ class DefaultController extends Controller
 
     
     /**
-     * Create a todo
+     * TODO endpoint to create a todo
      */
     public function actionCreate()
     {
@@ -61,10 +61,11 @@ class DefaultController extends Controller
         return $data;
     }
 
+    /**
+     * TODO endpoint to fetch new todos
+     */
     public function actionRead()
     {
-        $params = Yii::$app->request->post(); //to receive all input including that of json
-
         if($_SERVER['REQUEST_METHOD'] == "GET"){
             $data = Yii::$app->apiConfig->returnedData(200, false, $this->todo_array);
         }else{
@@ -75,15 +76,36 @@ class DefaultController extends Controller
         return $data;
     }
 
+    /**
+     * TODO endpoint to update an existing todo
+     */
     public function actionUpdate()
     {
+        $params = Yii::$app->request; //to receive all input including that of json
 
+        if($_SERVER['REQUEST_METHOD'] == "PUT"){
+           foreach($this->todo_array as $key => $value){
+                if($value['id'] == $params->getBodyParam('id')){
+                    $this->todo_array[$key]['title'] = $params->getBodyParam('title');
+                    $this->todo_array[$key]['status'] = $params->getBodyParam('status');
+                }
+            }
+
+            $data = Yii::$app->apiConfig->returnedData(200, false, $this->todo_array);
+        }else{
+            $message = 'Only PUT Method is allowed';
+            $data = Yii::$app->apiConfig->returnedData(401, true, $message); 
+        }
+
+        return $data;
     }
 
+    /**
+     * TODO endpoint to delete todo
+     */
     public function actionDelete()
     {
         $params = Yii::$app->request->post(); //to receive all input including that of json
-
         if($_SERVER['REQUEST_METHOD'] == "POST"){
             foreach($this->todo_array as $key => $value){
                 if($value['id'] == $params['id']){
